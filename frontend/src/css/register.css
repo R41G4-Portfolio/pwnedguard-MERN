@@ -1,0 +1,14 @@
+.register-form {
+	max-width: 400px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.register-form__field {
+	margin-bottom: var(--spacing-md);
+}
+
+.register-form__footer {
+	margin-top: var(--spacing-lg);
+	text-align: center;
+}

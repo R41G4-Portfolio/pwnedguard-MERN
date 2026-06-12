@@ -1,0 +1,440 @@
+/*
+	1. RESET Y NORMALIZACIÓN
+*/
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	min-height: 100vh;
+	font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+	line-height: 1.5;
+	color: var(--color-text);
+	background-color: var(--color-background);
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+/*
+	2. VARIABLES GLOBALES
+*/
+:root {
+	/* Colores */
+	--color-primary: #2c3e50;
+	--color-primary-dark: #1a252f;
+	--color-secondary: #6c757d;
+	--color-success: #27ae60;
+	--color-danger: #e74c3c;
+	--color-warning: #f39c12;
+	--color-info: #17a2b8;
+	--color-light: #f8f9fa;
+	--color-dark: #343a40;
+	--color-text: #333333;
+	--color-text-light: #7f8c8d;
+	--color-background: #f5f6fa;
+	--color-background-card: #ffffff;
+	--color-border: #dcdde1;
+
+	/* Espaciado */
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+
+	/* Breakpoints */
+	--breakpoint-mobile: 320px;
+	--breakpoint-tablet: 768px;
+	--breakpoint-desktop: 1024px;
+
+	/* Tipografía */
+	--font-size-xs: 0.75rem;
+	--font-size-sm: 0.875rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.25rem;
+	--font-size-xl: 1.5rem;
+	--font-size-2xl: 2rem;
+
+	/* Sombras */
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+
+	/* Bordes */
+	--border-radius-sm: 4px;
+	--border-radius-md: 8px;
+	--border-radius-lg: 12px;
+
+	/* Z-index */
+	--z-modal: 1000;
+	--z-header: 100;
+}
+
+/*
+	3. FUENTES PERSONALIZADAS
+*/
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/Inter-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/Inter-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+/*
+	4. BOTONES REUTILIZABLES
+*/
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-sm) var(--spacing-lg);
+	border-radius: var(--border-radius-md);
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: none;
+	text-decoration: none;
+}
+
+.btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.btn--primary:disabled {
+	background-color: var(--color-primary);
+	opacity: 0.6;
+}
+
+.btn--secondary:disabled {
+	background-color: var(--color-border);
+	opacity: 0.6;
+}
+
+.btn--primary {
+	background-color: var(--color-primary);
+	color: white;
+}
+
+.btn--primary:hover {
+	background-color: var(--color-primary-dark);
+}
+
+.btn--secondary {
+	background-color: var(--color-secondary);
+	color: white;
+}
+
+.btn--secondary:hover {
+	background-color: #5a6268;
+}
+
+.btn--success {
+	background-color: var(--color-success);
+	color: white;
+}
+
+.btn--success:hover {
+	background-color: #219653;
+}
+
+.btn--danger {
+	background-color: var(--color-danger);
+	color: white;
+}
+
+.btn--danger:hover {
+	background-color: #c0392b;
+}
+
+.btn--warning {
+	background-color: var(--color-warning);
+	color: white;
+}
+
+.btn--warning:hover {
+	background-color: #e67e22;
+}
+
+.btn--info {
+	background-color: var(--color-info);
+	color: white;
+}
+
+.btn--info:hover {
+	background-color: #138496;
+}
+
+.btn--light {
+	background-color: var(--color-light);
+	color: var(--color-text);
+}
+
+.btn--light:hover {
+	background-color: #e2e6ea;
+}
+
+.btn--dark {
+	background-color: var(--color-dark);
+	color: white;
+}
+
+.btn--dark:hover {
+	background-color: #23272b;
+}
+
+.btn--loading {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.btn--full-width {
+	width: 100%;
+}
+
+/*
+	5. BADGES REUTILIZABLES
+*/
+.badge {
+	display: inline-block;
+	padding: var(--spacing-xs) var(--spacing-sm);
+	border-radius: var(--border-radius-sm);
+	font-size: var(--font-size-xs);
+	font-weight: 600;
+	text-align: center;
+}
+
+.badge--primary {
+	background-color: var(--color-primary);
+	color: white;
+}
+
+.badge--secondary {
+	background-color: var(--color-secondary);
+	color: white;
+}
+
+.badge--success {
+	background-color: var(--color-success);
+	color: white;
+}
+
+.badge--danger {
+	background-color: var(--color-danger);
+	color: white;
+}
+
+.badge--warning {
+	background-color: var(--color-warning);
+	color: white;
+}
+
+.badge--info {
+	background-color: var(--color-info);
+	color: white;
+}
+
+.badge--light {
+	background-color: var(--color-light);
+	color: var(--color-text);
+}
+
+.badge--dark {
+	background-color: var(--color-dark);
+	color: white;
+}
+
+/*
+	6. CARDS REUTILIZABLES
+*/
+.card {
+	background-color: var(--color-background-card);
+	border-radius: var(--border-radius-md);
+	box-shadow: var(--shadow-sm);
+	padding: var(--spacing-lg);
+}
+
+.card--shadow {
+	box-shadow: var(--shadow-md);
+}
+
+/*
+	7. FORMULARIOS
+*/
+.form-group {
+	margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+	display: block;
+	margin-bottom: var(--spacing-xs);
+	font-size: var(--font-size-sm);
+	font-weight: 500;
+	color: var(--color-text);
+}
+
+.form-input {
+	width: 100%;
+	padding: var(--spacing-sm) var(--spacing-md);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-sm);
+	font-size: var(--font-size-md);
+	transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: var(--color-primary);
+}
+
+.form-input--error {
+	border-color: var(--color-danger);
+}
+
+.form-error {
+	color: var(--color-danger);
+	font-size: var(--font-size-sm);
+	margin-top: var(--spacing-xs);
+}
+
+/*
+	8. CLASES UTILITARIAS
+*/
+.container {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: var(--spacing-md);
+	padding-right: var(--spacing-md);
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-success {
+	color: var(--color-success);
+}
+
+.text-danger {
+	color: var(--color-danger);
+}
+
+.text-muted {
+	color: var(--color-text-light);
+}
+
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+.mt-5 { margin-top: var(--spacing-xl); }
+
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
+.mb-5 { margin-bottom: var(--spacing-xl); }
+
+.flex {
+	display: flex;
+}
+
+.flex-column {
+	flex-direction: column;
+}
+
+.items-center {
+	align-items: center;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.justify-between {
+	justify-content: space-between;
+}
+
+.gap-1 { gap: var(--spacing-xs); }
+.gap-2 { gap: var(--spacing-sm); }
+.gap-3 { gap: var(--spacing-md); }
+
+.app {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.app > main {
+	flex: 1;
+}
+
+.page--login,
+.page--register {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login-form,
+.register-form {
+	max-width: 400px;
+	width: 100%;
+	margin: 0 auto;
+}

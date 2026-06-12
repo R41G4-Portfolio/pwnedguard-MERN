@@ -1,0 +1,17 @@
+.dashboard-page__header {
+	margin-bottom: var(--spacing-xl);
+}
+
+.dashboard-page__title {
+	font-size: var(--font-size-xl);
+	margin-bottom: var(--spacing-xs);
+}
+
+.dashboard-page__name {
+	font-size: var(--font-size-md);
+	margin-bottom: var(--spacing-xs);
+}
+
+.dashboard-page__email {
+	font-size: var(--font-size-sm);
+}

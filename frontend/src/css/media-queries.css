@@ -1,0 +1,36 @@
+@media (min-width: 768px) {
+	.container {
+		max-width: 720px;
+		padding-left: var(--spacing-lg);
+		padding-right: var(--spacing-lg);
+	}
+}
+
+@media (min-width: 1024px) {
+	.container {
+		max-width: 960px;
+		padding-left: var(--spacing-xl);
+		padding-right: var(--spacing-xl);
+	}
+}
+
+@media (max-width: 767px) {
+	.header {
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.header__nav {
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+
+	.password-checker__form {
+		flex-direction: column;
+	}
+
+	.footer__links {
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+}

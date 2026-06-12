@@ -1,0 +1,18 @@
+/*
+	Importación de todos los css
+*/
+@import './css/App.css';
+@import './css/card-result.css';
+@import './css/cards.css';
+@import './css/dashboard.css';
+@import './css/footer.css';
+@import './css/header.css';
+@import './css/home.css';
+@import './css/layout.css';
+@import './css/login-form.css';
+@import './css/media-queries.css';
+@import './css/modal.css';
+@import './css/password-checker.css';
+@import './css/register.css';
+@import './css/spinner.css';
+@import './css/spinner-login.css';

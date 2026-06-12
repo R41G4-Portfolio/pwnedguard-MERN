@@ -1,0 +1,12 @@
+.home-page__hero {
+	margin: var(--spacing-2xl) 0;
+}
+
+.home-page__title {
+	font-size: var(--font-size-2xl);
+	margin-bottom: var(--spacing-md);
+}
+
+.home-page__subtitle {
+	font-size: var(--font-size-md);
+}

@@ -1,0 +1,66 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Entornos y variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Directorios de build
+dist/
+build/
+.next/
+out/
+
+# Archivos de sistema macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Editor: VS Code
+.vscode/
+*.code-workspace
+.history/
+*.log
+
+# Editor: JetBrains
+.idea/
+*.iml
+
+# Editor: Sublime Text
+*.sublime-*
+
+# Archivos de logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos temporales
+*.tmp
+*.temp
+*.cache
+
+# Cobertura de tests
+coverage/
+.nyc_output/
+
+# Archivos de entorno de desarrollo
+.vercel
+.netlify
+
+# Archivos de OS
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*~
+
+# Archivos de tutorial de configuración del servidor en producción.
+Comandos_configurar_servidor.md

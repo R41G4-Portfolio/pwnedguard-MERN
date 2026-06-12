@@ -1,0 +1,22 @@
+.result-card {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--spacing-md);
+	padding: var(--spacing-md);
+}
+
+.result-card__icon {
+	flex-shrink: 0;
+}
+
+.result-card__content {
+	flex: 1;
+}
+
+.result-card__count {
+	margin-top: var(--spacing-xs);
+}
+
+.result-card__hash-info {
+	margin-top: var(--spacing-xs);
+}
