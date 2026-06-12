@@ -180,7 +180,7 @@ Ejemplo de estructura de clases:
 | ✅ Paso 1: Etiquetado JSX + API third-party | Completado |
 | ✅ Paso 2: Backend con autenticación | Completado |
 | ✅ Paso 3: Autorización con React | Completado |
-| ⏳ Despliegue | Pendiente |
+| ✅ Despliegue | https://pwnedguard.mooo.com/dashboard |
 
 Me espero a que esté aprobado para subirlo a servidor de GCP.
 
