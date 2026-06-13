@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 1. Función original para SRI (Archivos externos JS/CSS)
+// 1. Función para SRI (Archivos externos JS/CSS)
 function calculateSRI(filePath, algorithm = 'sha384') {
   const fileBuffer = fs.readFileSync(filePath);
   const hash = crypto.createHash(algorithm);
@@ -25,69 +25,93 @@ const distDir = path.resolve(process.cwd(), 'dist');
 const indexPath = path.join(distDir, 'index.html');
 
 try {
+  if (!fs.existsSync(indexPath)) {
+    throw new Error(`No se encontró el archivo index.html en: ${indexPath}`);
+  }
+
   let html = fs.readFileSync(indexPath, 'utf8');
   const cssHashes = [];
 
   console.log('\n--- 🛡️ INICIANDO POSTPROCESAMIENTO DE SEGURIDAD ---');
 
-  // Lógica A: Inyectar SRI a las etiquetas estándar de assets (script y stylesheet)
-  // 1. Procesar Scripts (buscando 'src')
-  html = html.replace(/<script type="module"([^>]*) src="([^"]+)"([^>]*)><\/script>/g, (match, before, src, after) => {
+  // ========================================================
+  // LÓGICA A1: Procesar Scripts (Soporta Autoconclusivos /> y normales)
+  // ========================================================
+  html = html.replace(/<script\b[^>]*?\bsrc="([^"]+)"[^>]*?>(<\/script>)?/g, (match, src) => {
     if (src.startsWith('http') || src.startsWith('//')) return match;
 
     const filePath = path.join(distDir, src.replace(/^\//, ''));
-    if (!fs.existsSync(filePath)) return match;
+    if (!fs.existsSync(filePath)) {
+      console.warn(`⚠️ Archivo JS no encontrado para integridad: ${filePath}`);
+      return match;
+    }
 
     const integrity = calculateSRI(filePath, 'sha384');
     console.log(`Adding integrity to JS: ${src}`);
-    return `<script type="module"${before} src="${src}" integrity="${integrity}" crossorigin="anonymous"${after}></script>`;
+    
+    // Retorna una etiqueta limpia y estandarizada evitando duplicaciones de atributos
+    return `<script type="module" src="${src}" integrity="${integrity}" crossorigin="anonymous"></script>`;
   });
 
-  // Lógica B: Tu lógica original adaptada para modulepreload
-// 2. Procesar Stylesheets (buscando 'href')
-  html = html.replace(/<link rel="stylesheet"([^>]*) href="([^"]+)"([^>]*)>/g, (match, before, href, after) => {
+  // ========================================================
+  // LÓGICA A2: Procesar Stylesheets (Limpia crossorigin previos)
+  // ========================================================
+  html = html.replace(/<link\b[^>]*?\brel="stylesheet"[^>]*?\bhref="([^"]+)"[^>]*?>/g, (match, href) => {
+    if (href.startsWith('http') || href.startsWith('//')) return match;
+
+    const filePath = path.join(distDir, href.replace(/^\//, ''));
+    if (!fs.existsSync(filePath)) {
+      console.warn(`⚠️ Archivo CSS no encontrado para integridad: ${filePath}`);
+      return match;
+    }
+
+    const integrity = calculateSRI(filePath, 'sha384');
+    console.log(`Adding integrity to CSS: ${href}`);
+    
+    return `<link rel="stylesheet" href="${href}" integrity="${integrity}" crossorigin="anonymous">`;
+  });
+
+  // ========================================================
+  // LÓGICA B: Limpieza e Integridad para modulepreload (si existieran)
+  // ========================================================
+  html = html.replace(/<link\b[^>]*?\brel="modulepreload"[^>]*?\bhref="([^"]+)"[^>]*?>/g, (match, href) => {
     if (href.startsWith('http') || href.startsWith('//')) return match;
 
     const filePath = path.join(distDir, href.replace(/^\//, ''));
     if (!fs.existsSync(filePath)) return match;
 
     const integrity = calculateSRI(filePath, 'sha384');
-    console.log(`Adding integrity to CSS: ${href}`);
-    // Evitamos duplicar crossorigin si Vite ya lo puso
-    const cleanBefore = before.replace(/crossorigin(="[^"]*")?/g, '').trim();
-    const cleanAfter = after.replace(/crossorigin(="[^"]*")?/g, '').trim();
-    return `<link rel="stylesheet" ${cleanBefore} href="${href}" integrity="${integrity}" crossorigin="anonymous" ${cleanAfter}>`;
+    console.log(`Adding integrity to modulepreload: ${href}`);
+    return `<link rel="modulepreload" href="${href}" integrity="${integrity}" crossorigin="anonymous">`;
   });
 
-  // Lógica C: Capturar bloques <style> inline para generar sus hashes CSP
+  // ========================================================
+  // LÓGICA C: Capturar bloques <style> inline para generar sus hashes CSP
+  // ========================================================
   const styleBlockRegex = /<style[^>]*>([\s\S]*?)<\/style>/g;
-  let match;
-  while ((match = styleBlockRegex.exec(html)) !== null)
-  {
-    const styleContent = match[1].trim();
-    if (styleContent.length > 0)
-	{
+  let matchStyle;
+  while ((matchStyle = styleBlockRegex.exec(html)) !== null) {
+    const styleContent = matchStyle[1].trim();
+    if (styleContent.length > 0) {
       const cspHash = calculateCSPHash(styleContent);
       cssHashes.push(cspHash);
     }
   }
 
-  // Escribir el HTML blindado
+  // Escribir el HTML blindado de forma definitiva
   fs.writeFileSync(indexPath, html);
   console.log('✅ SRI (Integrity) inyectado exitosamente en index.html.');
 
-  // 3. Output crucial para laconfiguración de Nginx
+  // Output para la configuración de Nginx
   console.log('\n======================================================');
-  console.log('🚨 HASHES DETECTADOS PARA la configuración CSP DE NGINX (style-src):');
-  if (cssHashes.length > 0)
+  console.log('🚨 HASHES DETECTADOS PARA LA CONFIGURACIÓN CSP DE NGINX (style-src):');
+  if (cssHashes.length > 0) {
     console.log(`style-src 'self' ${cssHashes.join(' ')};`);
-  else
+  } else {
     console.log("style-src 'self'; (No se detectaron bloques inline críticos)");
-
+  }
   console.log('======================================================\n');
 
-}
-catch (error)
-{
+} catch (error) {
   console.error('❌ Error procesando el HTML de producción:', error);
 }
