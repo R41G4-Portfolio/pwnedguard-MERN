@@ -12,13 +12,14 @@ const Header = () => {
 	};
 
 	const handleLogout = async () => {
-		try {
+		try
+		{
 			await logout();
 			logoutContext();
 			navigate('/');
-		} catch (error) {
-			console.error('Error al cerrar sesión:', error.message);
-			
+		}
+		catch (error)
+		{	
 			// Si el error es 401 (No autorizado)
 			if (error.message === 'UNAUTHORIZED') {
 				clearAuthMetaCookie();      // Borrar cookie visible
