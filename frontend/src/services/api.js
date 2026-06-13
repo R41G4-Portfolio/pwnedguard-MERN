@@ -85,24 +85,20 @@ export const signin = async (email, password) => {
 
 // Cierre de sesión
 export const logout = async () => {
-	try {
-		const response = await fetch(`${API_URL}/auth/logout`, {  // ← Quitar '/api' extra
-			method: 'POST',
-			credentials: 'include'
-		});
+    const response = await fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include'
+    });
 
-		if (response.status === 401) {
-			const error = await response.json();
-			throw new Error(error.error || 'Sesión inválida');
-		}
+    // Si es 401, la sesión ya no es válida
+    if (response.status === 401) {
+        throw new Error('UNAUTHORIZED');
+    }
 
-		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.error || 'Error al cerrar sesión');
-		}
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Error al cerrar sesión');
+    }
 
-		return await response.json();
-	} catch (error) {
-		throw error;
-	}
+    return await response.json();
 };

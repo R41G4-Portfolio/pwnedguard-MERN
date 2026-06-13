@@ -19,9 +19,8 @@ const Header = () => {
 		} catch (error) {
 			console.error('Error al cerrar sesión:', error.message);
 			
-			// Si el error es por sesión inválida o expirada
-			if (error.message === 'Sesión inválida o expirada' || 
-				error.message === 'Sesión inválida') {
+			// Si el error es 401 (No autorizado)
+			if (error.message === 'UNAUTHORIZED') {
 				clearAuthMetaCookie();      // Borrar cookie visible
 				logoutContext();             // Limpiar contexto
 				navigate('/login');          // Redirigir a login
