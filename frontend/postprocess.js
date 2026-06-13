@@ -31,28 +31,32 @@ try {
   console.log('\n--- 🛡️ INICIANDO POSTPROCESAMIENTO DE SEGURIDAD ---');
 
   // Lógica A: Inyectar SRI a las etiquetas estándar de assets (script y stylesheet)
-  html = html.replace(/<(script type="module"|link rel="stylesheet")([^>]*)\shref="([^"]+)"([^>]*)>/g, (match, tagType, before, href, after) => {
-    // Evitar romper enlaces externos absolutos
+  // 1. Procesar Scripts (buscando 'src')
+  html = html.replace(/<script type="module"([^>]*) src="([^"]+)"([^>]*)><\/script>/g, (match, before, src, after) => {
+    if (src.startsWith('http') || src.startsWith('//')) return match;
+
+    const filePath = path.join(distDir, src.replace(/^\//, ''));
+    if (!fs.existsSync(filePath)) return match;
+
+    const integrity = calculateSRI(filePath, 'sha384');
+    console.log(`Adding integrity to JS: ${src}`);
+    return `<script type="module"${before} src="${src}" integrity="${integrity}" crossorigin="anonymous"${after}></script>`;
+  });
+
+  // Lógica B: Tu lógica original adaptada para modulepreload
+// 2. Procesar Stylesheets (buscando 'href')
+  html = html.replace(/<link rel="stylesheet"([^>]*) href="([^"]+)"([^>]*)>/g, (match, before, href, after) => {
     if (href.startsWith('http') || href.startsWith('//')) return match;
 
     const filePath = path.join(distDir, href.replace(/^\//, ''));
     if (!fs.existsSync(filePath)) return match;
 
     const integrity = calculateSRI(filePath, 'sha384');
-    
-    if (tagType.includes('script'))
-      return `<script type="module"${before} href="${href}" integrity="${integrity}" crossorigin="anonymous"${after}></script>`;
-    else
-      return `<link rel="stylesheet"${before} href="${href}" integrity="${integrity}" crossorigin="anonymous"${after}>`;
-  });
-
-  // Lógica B: Tu lógica original adaptada para modulepreload
-  html = html.replace(/<link rel="modulepreload" crossorigin href="([^"]+)">/g, (match, href) => {
-    const filePath = path.join(distDir, href.replace(/^\//, ''));
-    if (!fs.existsSync(filePath)) return match;
-
-    const integrity = calculateSRI(filePath, 'sha384');
-    return `<link rel="modulepreload" crossorigin="anonymous" href="${href}" integrity="${integrity}">`;
+    console.log(`Adding integrity to CSS: ${href}`);
+    // Evitamos duplicar crossorigin si Vite ya lo puso
+    const cleanBefore = before.replace(/crossorigin(="[^"]*")?/g, '').trim();
+    const cleanAfter = after.replace(/crossorigin(="[^"]*")?/g, '').trim();
+    return `<link rel="stylesheet" ${cleanBefore} href="${href}" integrity="${integrity}" crossorigin="anonymous" ${cleanAfter}>`;
   });
 
   // Lógica C: Capturar bloques <style> inline para generar sus hashes CSP
