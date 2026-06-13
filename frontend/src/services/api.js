@@ -85,16 +85,25 @@ export const signin = async (email, password) => {
 
 // Cierre de sesión
 export const logout = async () => {
-	// Corregido: se eliminó '/api' duplicado de la cadena
-	const response = await fetch(`${API_URL}/auth/logout`, {
-		method: 'POST',
-		credentials: 'include'
-	});
+    try {
+        const response = await fetch(`${API_URL}/api/auth/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
 
-	if (!response.ok) {
-		const error = await response.json();
-		throw new Error(error.error || 'Error al cerrar sesión');
-	}
+        if (response.status === 401) {
+            const error = await response.json();
+            // Lanzar el mensaje exacto que viene del backend
+            throw new Error(error.error || 'Sesión inválida');
+        }
 
-	return await response.json();
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Error al cerrar sesión');
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
 };

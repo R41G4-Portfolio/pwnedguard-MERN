@@ -7,13 +7,25 @@ const Header = () => {
 	const navigate = useNavigate();
 	const { isAuthenticated, user, logout: logoutContext } = useContext(AuthContext);
 
+	const clearAuthMetaCookie = () => {
+		document.cookie = 'auth_meta=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+	};
+
 	const handleLogout = async () => {
 		try {
 			await logout();
 			logoutContext();
 			navigate('/');
 		} catch (error) {
-			console.error('Error al cerrar sesión:', error);
+			console.error('Error al cerrar sesión:', error.message);
+			
+			// Si el error es por sesión inválida o expirada
+			if (error.message === 'Sesión inválida o expirada' || 
+				error.message === 'Sesión inválida') {
+				clearAuthMetaCookie();      // Borrar cookie visible
+				logoutContext();             // Limpiar contexto
+				navigate('/login');          // Redirigir a login
+			}
 		}
 	};
 
